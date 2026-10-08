@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { RadialMenuPresentational } from './radial-menu-presentational';
 import { MenuItem, Position } from './types';
-import { SocketContext } from '@/contexts/socketio';
 
 // Define our menu items
 const MENU_ITEMS: MenuItem[] = [
@@ -20,7 +19,6 @@ const DEAD_ZONE = 20; // Radius where nothing is selected
 const HOLD_DELAY = 0; // ms to hold right click before opening menu
 
 export default function RadialMenu() {
-  const { socket } = useContext(SocketContext);
   const [isOpen, setIsOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<Position>({ x: 0, y: 0 });
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -32,9 +30,6 @@ export default function RadialMenu() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const suppressMenuRef = useRef(false);
 
-  // Track our own triggers to ignore echos
-  const myTriggersRef = useRef<Set<string>>(new Set());
-
   // Sync refs
   useEffect(() => {
     isOpenRef.current = isOpen;
@@ -44,11 +39,9 @@ export default function RadialMenu() {
 
   // Handle Confetti
   const fireConfetti = useCallback((pageX: number, pageY: number, emoji: string) => {
-    // Normalize coordinates relative to the viewport
     const normalizedX = (pageX - window.scrollX) / window.innerWidth;
     const normalizedY = (pageY - window.scrollY) / window.innerHeight;
 
-    // Fire multiple bursts with different scalar values for random sizes
     const count = 5;
 
     for (let i = 0; i < count; i++) {
@@ -71,32 +64,8 @@ export default function RadialMenu() {
   }, []);
 
   const triggerConfetti = (x: number, y: number, item: MenuItem) => {
-    // 1. Trigger Locally using Page Coordinates
     fireConfetti(x, y, item.emoji);
   };
-
-  // Listen for remote confetti
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleConfettiReceive = (data: { id: string; emoji: string; x: number; y: number }) => {
-      // Ignore if it's our own
-      if (myTriggersRef.current.has(data.id)) {
-        // clean up old IDs
-        myTriggersRef.current.delete(data.id);
-        return;
-      }
-
-      // Received data is in Page Coordinates, fire directly
-      fireConfetti(data.x, data.y, data.emoji);
-    };
-
-    socket.on("confetti-receive", handleConfettiReceive);
-
-    return () => {
-      socket.off("confetti-receive", handleConfettiReceive);
-    };
-  }, [socket, fireConfetti]);
 
   const handleMouseDown = useCallback((e: MouseEvent) => {
     // Check for Right Click (button 2)
@@ -108,7 +77,7 @@ export default function RadialMenu() {
         setMenuPos(pos);
         setIsOpen(true);
         setActiveIndex(null);
-        suppressMenuRef.current = true; // Mark as suppressing the context menu
+        suppressMenuRef.current = true;
       }, HOLD_DELAY);
     }
   }, []);
@@ -126,20 +95,10 @@ export default function RadialMenu() {
       return;
     }
 
-    // Calculate Angle
     const angle = getAngle(origin, currentPos);
-
-    // Use original menu items
     const count = MENU_ITEMS.length;
-    const slice = 360 / count / 2; // Half slice for each side of the center line
-
-    // Shift angle so that 0 is at -90deg (North)
     const normalizedAngle = (angle + 90) % 360;
-
-    // Ensure positive modulus
     const positiveAngle = normalizedAngle < 0 ? normalizedAngle + 360 : normalizedAngle;
-
-    // Calculate index based on angle
     const index = Math.floor(positiveAngle / (360 / count));
 
     if (activeIndexRef.current !== index) {
@@ -148,42 +107,18 @@ export default function RadialMenu() {
   }, []);
 
   const handleMouseUp = useCallback((e: MouseEvent) => {
-    // Always clear timer on mouse up
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
     }
 
-    // Only care if we are open
     if (isOpenRef.current) {
-      // If we have an active selection
       if (activeIndexRef.current !== null) {
         const item = MENU_ITEMS[activeIndexRef.current];
-        // Trigger action
         triggerConfetti(e.pageX, e.pageY, item);
-
-        // Broadcast to others
-        if (socket) {
-          const burstId = `${socket.id}-${Date.now()}-${Math.random()}`;
-          myTriggersRef.current.add(burstId);
-
-          // clean up old IDs
-          if (myTriggersRef.current.size > 100) {
-            myTriggersRef.current.clear();
-          }
-
-          socket.emit("confetti-send", {
-            id: burstId,
-            emoji: item.emoji,
-            x: e.pageX,
-            y: e.pageY,
-          });
-        }
       }
-
       setIsOpen(false);
       setActiveIndex(null);
-    } else {
     }
   }, [triggerConfetti]);
 

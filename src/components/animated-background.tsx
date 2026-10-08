@@ -11,7 +11,7 @@ import { usePreloader } from "./preloader";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { Section, getKeyboardState } from "./animated-background-config";
-import { useSounds } from "./realtime/hooks/use-sounds";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,7 +23,7 @@ const AnimatedBackground = () => {
   const [splineApp, setSplineApp] = useState<Application>();
   const selectedSkillRef = useRef<Skill | null>(null);
 
-  const { playPressSound, playReleaseSound } = useSounds();
+  
 
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [activeSection, setActiveSection] = useState<Section>("hero");
@@ -41,7 +41,7 @@ const AnimatedBackground = () => {
     if (!splineApp || selectedSkillRef.current?.name === e.target.name) return;
 
     if (e.target.name === "body" || e.target.name === "platform") {
-      if (selectedSkillRef.current) playReleaseSound();
+      if (selectedSkillRef.current) 
       setSelectedSkill(null);
       selectedSkillRef.current = null;
       if (splineApp.getVariable("heading") && splineApp.getVariable("desc")) {
@@ -52,8 +52,8 @@ const AnimatedBackground = () => {
       if (!selectedSkillRef.current || selectedSkillRef.current.name !== e.target.name) {
         const skill = SKILLS[e.target.name as SkillNames];
         if (skill) {
-          if (selectedSkillRef.current) playReleaseSound();
-          playPressSound();
+          if (selectedSkillRef.current) 
+          
           setSelectedSkill(skill);
           selectedSkillRef.current = skill;
         }
@@ -76,7 +76,7 @@ const AnimatedBackground = () => {
 
     splineApp.addEventListener("keyUp", () => {
       if (!splineApp || isInputFocused()) return;
-      playReleaseSound();
+      
       splineApp.setVariable("heading", "");
       splineApp.setVariable("desc", "");
     });
@@ -84,7 +84,7 @@ const AnimatedBackground = () => {
       if (!splineApp || isInputFocused()) return;
       const skill = SKILLS[e.target.name as SkillNames];
       if (skill) {
-        playPressSound();
+        
         setSelectedSkill(skill);
         selectedSkillRef.current = skill;
         splineApp.setVariable("heading", skill.label);

@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import ContactForm from "../ContactForm";
+
 import { config } from "@/data/config";
 import { SectionHeader } from "./section-header";
 import SectionWrapper from "../ui/section-wrapper";
