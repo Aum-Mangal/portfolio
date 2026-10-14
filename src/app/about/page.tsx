@@ -1,48 +1,24 @@
 "use client";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import {
-  FaCss3,
-  FaDocker,
   FaEnvelope,
   FaGit,
   FaGithub,
-  FaHtml5,
   FaLinkedin,
-  FaLinux,
-  FaNodeJs,
   FaPhone,
   FaReact,
-  FaAws,
 } from "react-icons/fa6";
+import { RiJavascriptFill } from "react-icons/ri";
 import {
-  RiJavascriptFill,
-  RiNextjsFill,
-  RiTailwindCssFill,
-} from "react-icons/ri";
-import {
-  SiDotnet,
-  SiExpress,
-  SiLaravel,
-  SiMongodb,
-  SiCsharp,
-  SiPhp,
-  SiPrettier,
-  SiFirebase,
+  SiCplusplus,
   SiPostgresql,
   SiPython,
-  SiRedis,
-  SiSocketdotio,
-  SiSqlite,
   SiTypescript,
-  SiVercel,
-  SiVscodium,
 } from "react-icons/si";
 
 // @ts-ignore
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
-import { TbBrandReactNative, TbTerminal2 } from "react-icons/tb";
 
 const CONTACT_LINKS = [
   {
@@ -75,7 +51,7 @@ const TOOLS = [
   {
     name: "C++",
     content: "High-performance systems language",
-    icon: <SiCsharp size={"50px"} color="#00599C" />,
+    icon: <SiCplusplus size={"50px"} color="#00599C" />,
     color: "#00599C",
   },
   {
@@ -198,9 +174,9 @@ function Page() {
                     easing: "cubic-bezier(0.25, 1, 0.5, 1)",
                     arrows: false,
                   }}
-                  aria-label="Teknoloji İkonları"
+                  aria-label="Technology Icons"
                 >
-                  {TOOLS.reverse().map((tool) => (
+                  {TOOLS.map((tool) => (
                     <SplideSlide key={tool.name}>
                       <div
                         key={tool.name}

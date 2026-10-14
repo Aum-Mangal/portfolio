@@ -198,17 +198,17 @@ export const EXPERIENCE: Experience[] = [
 
 export const themeDisclaimers = {
   light: [
-    "Uyarı: Light mode göz kamaştırıcı parlaklıkta!",
-    "Dikkat: Light mode aktif! Güneş gözlüğünüzü takın.",
-    "Bu kadar parlaklığı sadece profesyoneller kaldırabilir!",
-    "Light mode açılıyor... Gözleriniz hazır mı?",
-    "Işık moduna geçiliyor — geleceğinizden daha parlak!",
+    "Warning: Light mode ahead, sunglasses recommended! ☀️😎",
+    "Switching to light mode — brighter than the future!",
+    "Only true daredevils can handle this much radiance! ⚡",
+    "Brace yourself... Photon overload incoming! 💡",
+    "Light mode activated! Let there be light.",
   ],
   dark: [
-    "Dark mode aktif! Karanlık tarafın gücü seninle olsun.",
-    "Dark mode'a geri hoş geldin. Işık tarafında hayat nasıldı?",
-    "Dark mode aktif! Kalbimin derinliklerinden ve gözlerimden teşekkürler.",
-    "Gölgelere geri hoş geldin. Dışarıda hayat nasıldı?",
-    "Dark mode açık! Sonunda gerçek zarafeti anlayan biri.",
+    "Dark mode activated! May the dark side be with you. 🌌",
+    "Welcome back to the shadows. Your eyes thank you! 🕶️",
+    "Dark mode on. Finally, someone with true taste. 🖤",
+    "Ah, darkness my old friend. Hello again. 🌑",
+    "Stealth mode engaged. Code in comfort. 💻✨",
   ],
 };

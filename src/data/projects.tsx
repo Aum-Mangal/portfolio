@@ -1,29 +1,19 @@
-import SlideShow from "@/components/slide-show";
 import { Button } from "@/components/ui/button";
 import { TypographyH3, TypographyP } from "@/components/ui/typography";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { RiNextjsFill, RiNodejsFill, RiReactjsFill } from "react-icons/ri";
+import { RiReactjsFill } from "react-icons/ri";
 import {
-  SiDotnet,
-  SiExpress,
-  SiLaravel,
-  SiMongodb,
   SiPostgresql,
   SiPython,
-  SiRedis,
-  SiSocketdotio,
   SiSqlite,
   SiTailwindcss,
   SiTypescript,
-  SiBootstrap,
   SiFastapi,
   SiCplusplus,
   SiJavascript
 } from "react-icons/si";
-import { TbDeviceMobileCode } from "react-icons/tb";
-const BASE_PATH = "/assets/projects-screenshots";
 
 const ProjectsLinks = ({ live, repo }: { live?: string; repo?: string }) => {
   return (

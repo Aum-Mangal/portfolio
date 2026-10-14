@@ -23,8 +23,8 @@ const ProjectsSection = () => {
     <SectionWrapper id="projects" className="max-w-7xl mx-auto md:h-[130dvh]">
       <SectionHeader id='projects' title="Projects" />
       <div className="grid grid-cols-1 md:grid-cols-3">
-        {projects.map((project, index) => (
-          <Modall key={project.src} project={project} />
+        {projects.map((project) => (
+          <Modall key={project.id} project={project} />
         ))}
       </div>
     </SectionWrapper>
@@ -36,19 +36,27 @@ const Modall = ({ project }: { project: Project }) => {
       <Modal>
         <ModalTrigger className="bg-transparent flex justify-center group/modal-btn">
           <div
-            className="relative w-[90vw] sm:w-[350px] md:w-[400px] h-auto rounded-lg overflow-hidden mx-auto"
+            className="relative w-[90vw] sm:w-[350px] md:w-[400px] h-auto rounded-lg overflow-hidden mx-auto border border-zinc-800 bg-gradient-to-br from-zinc-800/60 to-zinc-950"
             style={{ aspectRatio: "3/2" }}
           >
-            <Image
-              className="absolute w-full h-full top-0 left-0 hover:scale-[1.05] transition-all"
-              src={project.src}
-              alt={project.title}
-              width={300}
-              height={300}
-            />
+            {project.src ? (
+              <Image
+                className="absolute w-full h-full top-0 left-0 hover:scale-[1.05] transition-all object-cover"
+                src={project.src}
+                alt={project.title}
+                width={300}
+                height={300}
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center p-6 bg-gradient-to-br from-zinc-800/80 via-zinc-900 to-black">
+                <div className="text-2xl font-bold text-zinc-500/40 select-none tracking-wider text-center uppercase">
+                  {project.title}
+                </div>
+              </div>
+            )}
             <div className="absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-t from-black via-black/85 to-transparent pointer-events-none">
               <div className="flex flex-col h-full items-start justify-end p-6">
-                <div className="text-lg text-left">{project.title}</div>
+                <div className="text-lg text-left text-white">{project.title}</div>
                 <div className="text-xs bg-white text-black rounded-lg w-fit px-2">
                   {project.category}
                 </div>

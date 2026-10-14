@@ -19,10 +19,10 @@ const config = {
   ],
   author: "Aum Mangal",
   email: "aummangal307@gmail.com",
-  site: "https://aummangal.vercel.app",
+  site: "https://portfolio-aum-mangal.vercel.app",
 
   // for github stars button
-  githubUsername: "aummangal",
+  githubUsername: "Aum-Mangal",
   githubRepo: "portfolio",
 
   get ogImg() {
