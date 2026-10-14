@@ -37,25 +37,104 @@ const AnimatedBackground = () => {
 
   // --- Event Handlers ---
 
+  // Map 3D Spline keyboard keys and other keycaps to the 24 skills
+  const KEY_NAME_TO_SKILL: Record<string, SkillNames> = {
+    // Direct matches
+    python: SkillNames.PYTHON,
+    cpp: SkillNames.CPP,
+    ts: SkillNames.TS,
+    js: SkillNames.JS,
+    fastapi: SkillNames.FASTAPI,
+    react: SkillNames.REACT,
+    postgres: SkillNames.POSTGRES,
+    docker: SkillNames.DOCKER,
+    git: SkillNames.GIT,
+
+    // Replaced buttons on the keyboard with new tech stack
+    html: SkillNames.DSA,
+    css: SkillNames.AI,
+    nextjs: SkillNames.RAG,
+    tailwind: SkillNames.LANGCHAIN,
+    mongodb: SkillNames.FAISS,
+    nodejs: SkillNames.REST_API,
+    github: SkillNames.NLP,
+    linux: SkillNames.SPACY,
+    vscode: SkillNames.HUGGINGFACE,
+    sqlite: SkillNames.SQL,
+
+    // Other buttons on the keyboard
+    "keycap-desktop": SkillNames.COMPILER_DESIGN,
+    "keycap-mobile": SkillNames.VIRTUAL_MACHINES,
+  };
+
+  const KEY_CODE_TO_SKILL: Record<string, SkillNames> = {
+    KeyP: SkillNames.PYTHON,
+    KeyC: SkillNames.CPP,
+    KeyD: SkillNames.DSA,
+    KeyT: SkillNames.TS,
+    KeyJ: SkillNames.JS,
+    KeyF: SkillNames.FASTAPI,
+    KeyR: SkillNames.REACT,
+    KeyS: SkillNames.SQL,
+    KeyG: SkillNames.POSTGRES,
+    KeyA: SkillNames.AI,
+    KeyE: SkillNames.RAG,
+    KeyL: SkillNames.LANGCHAIN,
+    KeyV: SkillNames.FAISS,
+    KeyN: SkillNames.NLP,
+    KeyY: SkillNames.SPACY,
+    KeyH: SkillNames.HUGGINGFACE,
+    KeyM: SkillNames.COMPILER_DESIGN,
+    KeyK: SkillNames.VIRTUAL_MACHINES,
+    KeyU: SkillNames.COMPUTER_ARCHITECTURE,
+    KeyO: SkillNames.OOP,
+    KeyX: SkillNames.OPERATING_SYSTEMS,
+    KeyW: SkillNames.DOCKER,
+    KeyI: SkillNames.REST_API,
+    KeyB: SkillNames.GIT,
+  };
+
+  const resolveSkillFromKey = (targetName: string): Skill | null => {
+    const mapped = KEY_NAME_TO_SKILL[targetName];
+    if (mapped && SKILLS[mapped]) return SKILLS[mapped];
+    if (SKILLS[targetName as SkillNames]) return SKILLS[targetName as SkillNames];
+    if (targetName.includes("keycap")) {
+      const coreSkills = [
+        SKILLS[SkillNames.COMPILER_DESIGN],
+        SKILLS[SkillNames.VIRTUAL_MACHINES],
+        SKILLS[SkillNames.COMPUTER_ARCHITECTURE],
+        SKILLS[SkillNames.OOP],
+        SKILLS[SkillNames.OPERATING_SYSTEMS],
+      ];
+      return coreSkills[Math.floor(Math.random() * coreSkills.length)];
+    }
+    return null;
+  };
+
   const handleMouseHover = (e: SplineEvent) => {
-    if (!splineApp || selectedSkillRef.current?.name === e.target.name) return;
+    if (!splineApp) return;
 
     if (e.target.name === "body" || e.target.name === "platform") {
-      if (selectedSkillRef.current) 
-      setSelectedSkill(null);
-      selectedSkillRef.current = null;
-      if (splineApp.getVariable("heading") && splineApp.getVariable("desc")) {
-        splineApp.setVariable("heading", "");
-        splineApp.setVariable("desc", "");
+      if (selectedSkillRef.current) {
+        setSelectedSkill(null);
+        selectedSkillRef.current = null;
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("portfolio-skill-active", { detail: null }));
+        }
+        if (splineApp.getVariable("heading") && splineApp.getVariable("desc")) {
+          splineApp.setVariable("heading", "");
+          splineApp.setVariable("desc", "");
+        }
       }
     } else {
-      if (!selectedSkillRef.current || selectedSkillRef.current.name !== e.target.name) {
-        const skill = SKILLS[e.target.name as SkillNames];
-        if (skill) {
-          if (selectedSkillRef.current) 
-          
-          setSelectedSkill(skill);
-          selectedSkillRef.current = skill;
+      const skill = resolveSkillFromKey(e.target.name);
+      if (skill && selectedSkillRef.current?.name !== skill.name) {
+        setSelectedSkill(skill);
+        selectedSkillRef.current = skill;
+        splineApp.setVariable("heading", skill.label);
+        splineApp.setVariable("desc", skill.shortDescription);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("portfolio-skill-active", { detail: skill }));
         }
       }
     }
@@ -76,22 +155,57 @@ const AnimatedBackground = () => {
 
     splineApp.addEventListener("keyUp", () => {
       if (!splineApp || isInputFocused()) return;
-      
       splineApp.setVariable("heading", "");
       splineApp.setVariable("desc", "");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("portfolio-skill-active", { detail: null }));
+      }
     });
+
     splineApp.addEventListener("keyDown", (e) => {
       if (!splineApp || isInputFocused()) return;
-      const skill = SKILLS[e.target.name as SkillNames];
+      const skill = resolveSkillFromKey(e.target.name);
       if (skill) {
-        
+        setSelectedSkill(skill);
+        selectedSkillRef.current = skill;
+        splineApp.setVariable("heading", skill.label);
+        splineApp.setVariable("desc", skill.shortDescription);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("portfolio-skill-active", { detail: skill }));
+        }
+      }
+    });
+
+    splineApp.addEventListener("mouseHover", handleMouseHover);
+
+    // Listen to physical keyboard events
+    const onWindowKeyDown = (e: KeyboardEvent) => {
+      if (isInputFocused()) return;
+      const skillName = KEY_CODE_TO_SKILL[e.code];
+      const skill = skillName ? SKILLS[skillName] : null;
+      if (skill) {
+        setSelectedSkill(skill);
+        selectedSkillRef.current = skill;
+        splineApp.setVariable("heading", skill.label);
+        splineApp.setVariable("desc", skill.shortDescription);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("portfolio-skill-active", { detail: skill }));
+        }
+      }
+    };
+    window.addEventListener("keydown", onWindowKeyDown);
+
+    // Listen to external selection from skills UI dock
+    const onSkillSelectEvent = (e: any) => {
+      const skill = e.detail as Skill;
+      if (skill && splineApp) {
         setSelectedSkill(skill);
         selectedSkillRef.current = skill;
         splineApp.setVariable("heading", skill.label);
         splineApp.setVariable("desc", skill.shortDescription);
       }
-    });
-    splineApp.addEventListener("mouseHover", handleMouseHover);
+    };
+    window.addEventListener("portfolio-skill-select", onSkillSelectEvent);
   };
 
   // --- Animation Setup Helpers ---
