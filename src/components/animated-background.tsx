@@ -37,61 +37,59 @@ const AnimatedBackground = () => {
 
   // --- Event Handlers ---
 
-  // Map 3D Spline keyboard keys and other keycaps to the 24 skills
+  // Map 3D Spline keyboard keys and other keycaps to the 23 skills
   const KEY_NAME_TO_SKILL: Record<string, SkillNames> = {
     // Direct matches
     python: SkillNames.PYTHON,
     cpp: SkillNames.CPP,
     ts: SkillNames.TS,
     js: SkillNames.JS,
-    fastapi: SkillNames.FASTAPI,
     react: SkillNames.REACT,
+    nodejs: SkillNames.NODEJS,
+    fastapi: SkillNames.FASTAPI,
     postgres: SkillNames.POSTGRES,
+    sqlite: SkillNames.SQLITE,
+    html: SkillNames.HTML,
+    css: SkillNames.CSS,
     docker: SkillNames.DOCKER,
     git: SkillNames.GIT,
+    github: SkillNames.GITHUB,
+    linux: SkillNames.LINUX,
 
-    // Replaced buttons on the keyboard with new tech stack
-    html: SkillNames.DSA,
-    css: SkillNames.AI,
-    nextjs: SkillNames.RAG,
-    tailwind: SkillNames.LANGCHAIN,
+    // Keys mapped to other 3D buttons on the keyboard
+    nextjs: SkillNames.VERCEL,
+    tailwind: SkillNames.REST_API,
     mongodb: SkillNames.FAISS,
-    nodejs: SkillNames.REST_API,
-    github: SkillNames.NLP,
-    linux: SkillNames.SPACY,
     vscode: SkillNames.HUGGINGFACE,
-    sqlite: SkillNames.SQL,
-
-    // Other buttons on the keyboard
-    "keycap-desktop": SkillNames.COMPILER_DESIGN,
-    "keycap-mobile": SkillNames.VIRTUAL_MACHINES,
+    "keycap-desktop": SkillNames.LANGCHAIN,
+    "keycap-mobile": SkillNames.SPACY,
   };
 
+  // 23 unique, non-overlapping physical keys
   const KEY_CODE_TO_SKILL: Record<string, SkillNames> = {
     KeyP: SkillNames.PYTHON,
     KeyC: SkillNames.CPP,
-    KeyD: SkillNames.DSA,
     KeyT: SkillNames.TS,
     KeyJ: SkillNames.JS,
-    KeyF: SkillNames.FASTAPI,
     KeyR: SkillNames.REACT,
-    KeyS: SkillNames.SQL,
-    KeyG: SkillNames.POSTGRES,
-    KeyA: SkillNames.AI,
-    KeyE: SkillNames.RAG,
+    KeyN: SkillNames.NODEJS,
+    KeyF: SkillNames.FASTAPI,
+    KeyQ: SkillNames.POSTGRES,
+    KeyS: SkillNames.SQLITE,
+    KeyA: SkillNames.REST_API,
     KeyL: SkillNames.LANGCHAIN,
-    KeyV: SkillNames.FAISS,
-    KeyN: SkillNames.NLP,
+    KeyI: SkillNames.FAISS,
     KeyY: SkillNames.SPACY,
     KeyH: SkillNames.HUGGINGFACE,
-    KeyM: SkillNames.COMPILER_DESIGN,
-    KeyK: SkillNames.VIRTUAL_MACHINES,
-    KeyU: SkillNames.COMPUTER_ARCHITECTURE,
-    KeyO: SkillNames.OOP,
-    KeyX: SkillNames.OPERATING_SYSTEMS,
-    KeyW: SkillNames.DOCKER,
-    KeyI: SkillNames.REST_API,
-    KeyB: SkillNames.GIT,
+    KeyZ: SkillNames.SDL2,
+    KeyX: SkillNames.CHARTJS,
+    KeyM: SkillNames.HTML,
+    KeyE: SkillNames.CSS,
+    KeyD: SkillNames.DOCKER,
+    KeyG: SkillNames.GIT,
+    KeyU: SkillNames.GITHUB,
+    KeyK: SkillNames.LINUX,
+    KeyV: SkillNames.VERCEL,
   };
 
   const resolveSkillFromKey = (targetName: string): Skill | null => {
@@ -99,14 +97,15 @@ const AnimatedBackground = () => {
     if (mapped && SKILLS[mapped]) return SKILLS[mapped];
     if (SKILLS[targetName as SkillNames]) return SKILLS[targetName as SkillNames];
     if (targetName.includes("keycap")) {
-      const coreSkills = [
-        SKILLS[SkillNames.COMPILER_DESIGN],
-        SKILLS[SkillNames.VIRTUAL_MACHINES],
-        SKILLS[SkillNames.COMPUTER_ARCHITECTURE],
-        SKILLS[SkillNames.OOP],
-        SKILLS[SkillNames.OPERATING_SYSTEMS],
+      const extraSkills = [
+        SKILLS[SkillNames.SDL2],
+        SKILLS[SkillNames.CHARTJS],
+        SKILLS[SkillNames.LANGCHAIN],
+        SKILLS[SkillNames.FAISS],
+        SKILLS[SkillNames.SPACY],
+        SKILLS[SkillNames.VERCEL],
       ];
-      return coreSkills[Math.floor(Math.random() * coreSkills.length)];
+      return extraSkills[Math.floor(Math.random() * extraSkills.length)];
     }
     return null;
   };
